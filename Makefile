@@ -12,8 +12,10 @@ migrateup:
 
 migratedown:
 	migrate -path db/migration -database "postgresql://root:password@localhost:5432/simplebank?sslmode=disable" -verbose down
+
+# in powershell::
 sqlc:
-	sqlc generate
+	docker run --rm -v ${PWD}:/src -w /src kjconroy/sqlc generate
 
 .PHONY: postgres createdb dropdb migrateup migratedown sqlc
 
