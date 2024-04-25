@@ -16,6 +16,8 @@ migratedown:
 # in powershell::
 sqlc:
 	docker run --rm -v ${PWD}:/src -w /src kjconroy/sqlc generate
+test:
+	go test -v -cover ./...
 
 .PHONY: postgres createdb dropdb migrateup migratedown sqlc
 

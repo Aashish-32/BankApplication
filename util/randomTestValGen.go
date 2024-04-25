@@ -1,4 +1,4 @@
-package db
+package util
 
 import (
 	"math/rand"
@@ -23,12 +23,12 @@ func randomString(n int) string {
 
 }
 
-func RandomMoney() {
-	randomInt(0, 10000)
+func RandomMoney() int64 {
+	return randomInt(0, 10000)
 
 }
-func RandomOwner() {
-	randomString(7)
+func RandomOwner() string {
+	return randomString(7)
 }
 
 func RandomCurrency() string {
