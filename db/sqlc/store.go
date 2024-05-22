@@ -94,7 +94,6 @@ func (store *Store) TransferTx(ctx context.Context, arg TransferTxParams) (Trans
 		}
 		//get account -> update it
 
-		fmt.Println(txname, "GetAccount 1 ")
 		account1, err := q.GetAccountForUpdate(ctx, arg.FromAccountID)
 		if err != nil {
 			return err
