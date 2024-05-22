@@ -5,3 +5,8 @@ content-type: application/json
     "owner": "sample",
     "currency": "EUR"
 }
+
+###
+
+GET http://localhost:8000/account/-22
+

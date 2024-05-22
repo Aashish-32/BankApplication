@@ -1,6 +1,7 @@
 package api
 
 import (
+	"database/sql"
 	"net/http"
 
 	db "github.com/Aashish-32/bank/db/sqlc"
@@ -30,6 +31,31 @@ func (server *Server) createAccount(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"Error": err})
 		return
 
+	}
+	ctx.JSON(http.StatusOK, account)
+
+}
+
+type getAccountparam struct {
+	ID int64 `uri:"id" binding:"required,min=1"`
+}
+
+func (server *Server) getAccount(ctx *gin.Context) {
+	var req getAccountparam
+	err := ctx.ShouldBindUri(&req)
+	if err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err})
+		return
+	}
+
+	account, err := server.store.GetAccount(ctx, req.ID)
+	if err == sql.ErrNoRows {
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err})
+		return
+	}
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		return
 	}
 	ctx.JSON(http.StatusOK, account)
 
