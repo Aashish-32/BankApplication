@@ -43,9 +43,9 @@ jobs:
 
       - name: Install migrate tool cli
         run: |
-        curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.1/migrate.linux-amd64.tar.gz | tar xvz
-        sudo mv migrate usr/bin/
-        which migrate
+          curl -L https://github.com/golang-migrate/migrate/releases/download/v4.17.1/migrate.linux-amd64.tar.gz | tar xvz
+          sudo mv migrate /usr/bin/
+          which migrate
 
       - name: Run Migrations
         run: make migrateup
