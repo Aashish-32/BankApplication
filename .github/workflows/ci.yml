@@ -13,6 +13,25 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+      
+    services:
+      postgres:
+        # Docker Hub image
+        image: postgres:16.0-alpine3.18
+        env:
+          POSTGRES_PASSWORD: password
+          POSTGRES_USER: password
+          POSTGRES_DB: simplebank
+
+        # Set health checks to wait until postgres has started
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          # Maps tcp port 5432 on service container to the host
+          - 5432:5432
     steps:
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -21,6 +40,9 @@ jobs:
 
       - name: Check out code into go module dir
         uses: actions/checkout@v4
+
+      - name: Run Migrations
+        run: make migrateup
 
       - name: Test
         run:  make test
