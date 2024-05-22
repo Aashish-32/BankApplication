@@ -8,5 +8,15 @@ content-type: application/json
 
 ###
 
-GET http://localhost:8000/account/-22
+GET http://localhost:8000/accounts/2
 
+###
+
+GET http://localhost:8000/accounts?page_id=2&page_size=6
+
+###
+
+
+GET https://localhost:8000/accounts
+    ?page=0
+    &pageSize=5
