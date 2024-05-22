@@ -1,7 +1,7 @@
-#Tech used
-- ##GOLANG
-- ##POSTGRES
-- ##SQLC
-- ##DOCKER
-- ##GITHUB ACTIONS
+# Tech used
+- ## GOLANG
+- ## POSTGRES
+- ## SQLC
+- ## DOCKER
+- ## GITHUB ACTIONS
 
