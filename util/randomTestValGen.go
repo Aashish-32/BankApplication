@@ -32,7 +32,7 @@ func RandomOwner() string {
 }
 
 func RandomCurrency() string {
-	curr := []string{"USD", "NPR", "GBP"}
+	curr := []string{"USD", "EUR", "GBP"}
 	n := len(curr)
 
 	return curr[rand.Intn(n)]
