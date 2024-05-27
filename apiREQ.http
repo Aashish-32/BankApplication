@@ -2,9 +2,10 @@ POST http://localhost:8000/accounts
 content-type: application/json
 
 {
-    "owner": "sample",
+    "owner": "sample2",
     "currency": "EUR"
 }
+
 
 ###
 
@@ -12,8 +13,7 @@ GET http://localhost:8000/accounts/2
 
 ###
 
-GET http://localhost:8000/accounts?page_id=2&page_size=6
-
+GET http://localhost:8000/accounts?page_id=1&page_size=2
 ###
 
 

@@ -23,7 +23,7 @@ server:
 	go run main.go
 
 acessPSQL:
-	docker exec -it postgres-container /bin/sh
+	docker exec -it mypostgres /bin/sh
 and:
 	psql -U root -d simplebank
 

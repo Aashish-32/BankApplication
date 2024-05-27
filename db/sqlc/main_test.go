@@ -6,18 +6,20 @@ import (
 	"os"
 	"testing"
 
+	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
-)
-
-const (
-	dbdriver = "postgres"
-	dbsource = "postgresql://root:password@localhost:5432/simplebank?sslmode=disable"
 )
 
 var testQueries *Queries
 var testDB *sql.DB
 
 func TestMain(m *testing.M) {
+	if err := godotenv.Load("../../.env"); err != nil {
+		log.Fatal("Cannot load variables ", err)
+	}
+
+	dbdriver := os.Getenv("dbdriver")
+	dbsource := os.Getenv("dbsource")
 	var err error
 	testDB, err = sql.Open(dbdriver, dbsource)
 	if err != nil {
