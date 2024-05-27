@@ -20,7 +20,7 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 	var req TransferRequest
 
 	if err := ctx.ShouldBind(&req); err != nil {
-		ctx.JSON(http.StatusBadRequest, err)
+		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
 	if !server.validAccount(ctx, req.FromAccountID, req.Currency, req.Amount) {
