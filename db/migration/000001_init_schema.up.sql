@@ -6,15 +6,6 @@ CREATE TABLE "accounts" (
   "currency" varchar NOT NULL,
   "created_at" timestamptz NOT NULL DEFAULT CURRENT_TIMESTAMP
 );
-CREATE TABLE "users"(
-"username" varchar PRIMARY KEY,
-"hashed_password" varchar NOT NULL,
-"full_name" varchar NOT NULL,
-"email" varchar UNIQUE NOT NULL,
-"password_changed_at" timestamptz NOT NULL DEFAULT '00001-01-01 00:00:00Z' 
-created_at timestamptz NOT NULL DEFAULT (now())
-);
-
 
 CREATE TABLE "entries" (
   "id" bigserial PRIMARY KEY,
@@ -37,10 +28,6 @@ ALTER TABLE "entries" ADD FOREIGN KEY ("account_id") REFERENCES "accounts" ("id"
 ALTER TABLE "transfers" ADD FOREIGN KEY ("from_account_id") REFERENCES "accounts" ("id");
 
 ALTER TABLE "transfers" ADD FOREIGN KEY ("to_account_id") REFERENCES "accounts" ("id");
-
-ALTER TABLE "accounts" ADD FOREIGN KEY ("owner") REFERENCES "users" ("username");
-
-CREATE UNIQUE INDEX ON "accounts" ("owner","currency");
 
 CREATE INDEX ON "accounts" ("owner");
 
