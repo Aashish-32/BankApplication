@@ -2,8 +2,8 @@ POST http://localhost:8000/accounts
 content-type: application/json
 
 {
-    "owner": "samplert2",
-    "currency": "vgf"
+    "owner": "adshysm",
+    "currency": "USD"
 }
 
 
