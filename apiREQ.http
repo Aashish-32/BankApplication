@@ -2,10 +2,26 @@ POST http://localhost:8000/accounts
 content-type: application/json
 
 {
-    "owner": "adshysm",
+    "owner": "adshybnub7",
     "currency": "USD"
 }
 
+###
+
+POST http://localhost:8000/users
+content-type: application/json
+
+{
+    "username": "adshybnub7",
+    "password": "abcdefghi",
+      "full_name": "aashsijh",
+        "email": "USD@gmail.com"
+}
+
+
+###
+
+GET http://localhost:8000/users/adshybnub7
 
 ###
 
@@ -17,10 +33,6 @@ GET http://localhost:8000/accounts?page_id=1&page_size=2
 ###
 
 
-GET https://localhost:8000/accounts
-    ?page=0
-    &pageSize=5
-###
 POST http://localhost:8000/transfers
 content-type: application/json
 
