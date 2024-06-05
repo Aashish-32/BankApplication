@@ -10,8 +10,15 @@ dropdb:
 migrateup:
 	migrate -path db/migration -database "postgresql://root:password@localhost:5432/simplebank?sslmode=disable" -verbose up
 
+migrateup1:
+	migrate -path db/migration -database "postgresql://root:password@localhost:5432/simplebank?sslmode=disable" -verbose up
+
 migratedown:
 	migrate -path db/migration -database "postgresql://root:password@localhost:5432/simplebank?sslmode=disable" -verbose down
+
+migratedown1:
+	migrate -path db/migration -database "postgresql://root:password@localhost:5432/simplebank?sslmode=disable" -verbose down 1
+
 
 # in powershell::
 sqlc:
@@ -28,7 +35,7 @@ and:
 	psql -U root -d simplebank
 
 
-.PHONY: postgres createdb dropdb migrateup migratedown sqlc server
+.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 sqlc server
 
 
 
