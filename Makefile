@@ -1,7 +1,7 @@
 postgres:
 	docker run --name mypostgres -e POSTGRES_PASSWORD=password -e POSTGRES_USER=root -p 5432:5432 -d postgres:16.0-alpine3.18
 
-createdb: 
+createdb:
 	docker exec -it mypostgres createdb --username=root --owner=root simplebank
 
 dropdb:
