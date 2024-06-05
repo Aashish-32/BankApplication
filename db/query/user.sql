@@ -2,7 +2,7 @@
 INSERT INTO users (
   username,
   hashed_password,
-  full_name
+  full_name,
   email
 ) VALUES (
   $1, $2, $3, $4
@@ -19,6 +19,6 @@ WHERE username = $1 LIMIT 1;
 -- name: ListUser :many
 SELECT * FROM users
 WHERE username = $1
-ORDER BY id
+ORDER BY username
 LIMIT $2
 OFFSET $3;
