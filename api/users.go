@@ -3,6 +3,7 @@ package api
 import (
 	"database/sql"
 	"net/http"
+	"time"
 
 	db "github.com/Aashish-32/bank/db/sqlc"
 	"github.com/Aashish-32/bank/util"
@@ -15,6 +16,13 @@ type createUserRequest struct {
 	Password string `json:"password" binding:"required,min=7"`
 	FullName string `json:"full_name" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
+}
+type createUserResponse struct {
+	Username            string
+	FullName            string
+	Email               string
+	Password_changed_at time.Time
+	Created_at          time.Time
 }
 
 func (server *Server) createUser(ctx *gin.Context) {
@@ -66,13 +74,20 @@ func (server *Server) getUser(ctx *gin.Context) {
 
 	account, err := server.store.GetUser(ctx, req.Username)
 	if err == sql.ErrNoRows {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": err})
+		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
 		return
 	}
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	ctx.JSON(http.StatusOK, account)
+	response := createUserResponse{
+		Username:            account.Username,
+		FullName:            account.FullName,
+		Email:               account.Email,
+		Password_changed_at: account.PasswordChangedAt,
+		Created_at:          account.CreatedAt,
+	}
+	ctx.JSON(http.StatusOK, response)
 
 }
