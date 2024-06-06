@@ -1,0 +1,6 @@
+ instruct the Go compiler to print information about escape analysis. 
+Escape analysis is a process where the Go compiler determines whether variables can be allocated on the stack or need to be allocated on the heap.
+ 
+go build -gcflags=-m main.go  
+
+go build -gcflags="-m -m" main.go
