@@ -85,7 +85,7 @@ func (server *Server) listAccounts(ctx *gin.Context) {
 
 	accounts, err := server.store.ListAccounts(ctx, arg)
 	if err != nil {
-		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error(})
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
