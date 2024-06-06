@@ -9,6 +9,8 @@ import (
 	"github.com/google/uuid"
 )
 
+var errExpiredToken = errors.New("token has expired")
+
 type Payload struct {
 	ID        uuid.UUID `json:"id"`
 	Username  string    `json:"username"`
@@ -74,4 +76,11 @@ func (p *Payload) GetNotBefore() (*jwt.NumericDate, error) {
 	}
 	// return jwt.NewNumericDate(time.Time{}), nil
 	return nil, nil
+}
+
+func (p *Payload) Valid() error {
+	if time.Now().After(p.Expiry) {
+		return errExpiredToken
+	}
+	return nil
 }
