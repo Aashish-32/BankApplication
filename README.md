@@ -4,4 +4,5 @@
 - ## SQLC
 - ## DOCKER
 - ## GITHUB ACTIONS
+- ## PASETO (&JWT)
 
