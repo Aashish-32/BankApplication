@@ -26,7 +26,10 @@ func main() {
 
 	}
 	store := db.NewStore(DB)
-	server := api.NewServer(store)
+	server, err := api.NewServer(store)
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	err = server.Start(server_address)
 	if err != nil {
