@@ -18,22 +18,12 @@ type Server struct {
 
 func NewServer(store *db.Store) (*Server, error) {
 	token_key := os.Getenv("token_symmetric_key")
-	// token_duration := os.Getenv("Access_token_duration")
 
 	tokenMaker, err := token.NewPasetoMaker(token_key)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %v", err)
 	}
 
-	// new_token_duration, err := time.ParseDuration(token_duration)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("unable parse duration: %v", err)
-	// }
-
-	// token, err := tokenMaker.CreateToken(token_key, new_token_duration)
-	// if err != nil {
-	// 	return nil, fmt.Errorf("unable to create token: %v", err)
-	// }
 	server := &Server{
 		store:      store,
 		tokenMaker: tokenMaker,

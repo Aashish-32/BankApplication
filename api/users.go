@@ -5,6 +5,10 @@ import (
 	"net/http"
 	"time"
 
+	"os"
+
+	"log"
+
 	db "github.com/Aashish-32/bank/db/sqlc"
 	"github.com/Aashish-32/bank/util"
 	"github.com/gin-gonic/gin"
@@ -17,7 +21,7 @@ type createUserRequest struct {
 	FullName string `json:"full_name" binding:"required"`
 	Email    string `json:"email" binding:"required,email"`
 }
-type createUserResponse struct {
+type UserResponse struct {
 	Username            string
 	FullName            string
 	Email               string
@@ -64,6 +68,17 @@ type getUserparams struct {
 	Username string `uri:"username" binding:"required,alphanum"`
 }
 
+func Newuserresponse(user db.User) UserResponse {
+	return UserResponse{
+		Username:            user.Username,
+		FullName:            user.FullName,
+		Email:               user.Email,
+		Password_changed_at: user.PasswordChangedAt,
+		Created_at:          user.CreatedAt,
+	}
+
+}
+
 func (server *Server) getUser(ctx *gin.Context) {
 	var req getUserparams
 	err := ctx.ShouldBindUri(&req)
@@ -81,13 +96,62 @@ func (server *Server) getUser(ctx *gin.Context) {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
-	response := createUserResponse{
-		Username:            account.Username,
-		FullName:            account.FullName,
-		Email:               account.Email,
-		Password_changed_at: account.PasswordChangedAt,
-		Created_at:          account.CreatedAt,
-	}
+	response := Newuserresponse(account)
 	ctx.JSON(http.StatusOK, response)
+
+}
+
+type loginUserRequest struct {
+	Username string `json:"username" binding:"required,alphanum"`
+	Password string `json:"password" binding:"required,min=7"`
+}
+
+type loginUserResponse struct {
+	AccessToken string       `json:"access_token"`
+	User        UserResponse `json:"user_response"`
+}
+
+func (server *Server) login(ctx *gin.Context) {
+	var req loginUserRequest
+	if err := ctx.ShouldBindJSON(&req); err != nil {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+		return
+	}
+	user, err := server.store.GetUser(ctx, req.Username)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			return
+
+		}
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+
+	}
+	newuser := Newuserresponse(user)
+	checkPasswordErr := util.CheckPassword(req.Password, user.HashedPassword)
+	if checkPasswordErr != nil {
+		ctx.JSON(http.StatusUnauthorized, gin.H{"error": checkPasswordErr.Error()})
+		return
+	}
+
+	token_duration := os.Getenv("Access_token_duration")
+
+	new_token_duration, err := time.ParseDuration(token_duration)
+	if err != nil {
+		log.Println("unable parse duration: %v", err)
+	}
+
+	accessToken, err := server.tokenMaker.CreateToken(req.Username, new_token_duration)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+	response := loginUserResponse{
+		AccessToken: accessToken,
+		User:        newuser,
+	}
+
+	ctx.JSON(http.StatusAccepted, response)
 
 }
