@@ -44,9 +44,9 @@ POST http://localhost:8000/transfers
 content-type: application/json
 
 {
-    "from_account_id": 7,
-    "to_account_id": 8,
+    "from_account_id": 31,
+    "to_account_id": 45,
     "amount": 100,
-    "currency": "gfv"
+    "currency": "EUR"
 }
 
