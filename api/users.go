@@ -89,7 +89,7 @@ func (server *Server) getUser(ctx *gin.Context) {
 
 	account, err := server.store.GetUser(ctx, req.Username)
 	if err == sql.ErrNoRows {
-		ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+		ctx.JSON(http.StatusNotFound, gin.H{"error from get user function": err.Error()})
 		return
 	}
 	if err != nil {
@@ -120,7 +120,7 @@ func (server *Server) login(ctx *gin.Context) {
 	user, err := server.store.GetUser(ctx, req.Username)
 	if err != nil {
 		if err == sql.ErrNoRows {
-			ctx.JSON(http.StatusNotFound, gin.H{"error": err.Error()})
+			ctx.JSON(http.StatusNotFound, gin.H{"error from login function": err.Error()})
 			return
 
 		}
@@ -128,7 +128,7 @@ func (server *Server) login(ctx *gin.Context) {
 		return
 
 	}
-	newuser := Newuserresponse(user)
+
 	checkPasswordErr := util.CheckPassword(req.Password, user.HashedPassword)
 	if checkPasswordErr != nil {
 		ctx.JSON(http.StatusUnauthorized, gin.H{"error": checkPasswordErr.Error()})
@@ -149,7 +149,7 @@ func (server *Server) login(ctx *gin.Context) {
 	}
 	response := loginUserResponse{
 		AccessToken: accessToken,
-		User:        newuser,
+		User:        Newuserresponse(user),
 	}
 
 	ctx.JSON(http.StatusAccepted, response)
