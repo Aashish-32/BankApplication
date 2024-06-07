@@ -139,7 +139,7 @@ func (server *Server) login(ctx *gin.Context) {
 
 	new_token_duration, err := time.ParseDuration(token_duration)
 	if err != nil {
-		log.Println("unable parse duration: %v", err)
+		log.Println("unable parse duration: %w", err)
 	}
 
 	accessToken, err := server.tokenMaker.CreateToken(req.Username, new_token_duration)
