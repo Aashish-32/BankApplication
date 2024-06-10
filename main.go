@@ -7,6 +7,7 @@ import (
 
 	api "github.com/Aashish-32/bank/api"
 	db "github.com/Aashish-32/bank/db/sqlc"
+	"github.com/Aashish-32/bank/util"
 	"github.com/joho/godotenv"
 	_ "github.com/lib/pq"
 )
@@ -26,7 +27,8 @@ func main() {
 
 	}
 	store := db.NewStore(DB)
-	server, err := api.NewServer(store)
+	var config util.Config
+	server, err := api.NewServer(config, store)
 	if err != nil {
 		log.Fatalln(err)
 	}

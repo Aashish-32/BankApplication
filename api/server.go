@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/Aashish-32/bank/token"
+	"github.com/Aashish-32/bank/util"
 
 	db "github.com/Aashish-32/bank/db/sqlc"
 	"github.com/gin-gonic/gin"
@@ -16,7 +17,7 @@ type Server struct {
 	tokenMaker token.Maker
 }
 
-func NewServer(store *db.Store) (*Server, error) {
+func NewServer(config util.Config, store *db.Store) (*Server, error) {
 	token_key := os.Getenv("token_symmetric_key")
 
 	tokenMaker, err := token.NewPasetoMaker(token_key)
