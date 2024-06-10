@@ -13,6 +13,7 @@ import (
 const (
 	authorizationHeaderKey  = "authorization"
 	authorizationPayloadKey = "authorization_key"
+	authorizationTypeBearer = "bearer"
 )
 
 var authorizationTypes = []string{"bearer"}
