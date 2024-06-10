@@ -29,6 +29,9 @@ func addAuthorization(t *testing.T,
 }
 
 func TestAuthMiddleware(t *testing.T) {
+
+	//table driven tests
+
 	testCases := []struct {
 		name          string
 		setupAuth     func(t *testing.T, req *http.Request, tokenmaker token.Maker)
@@ -90,6 +93,9 @@ func TestAuthMiddleware(t *testing.T) {
 		//generating subtest
 
 		t.Run(tc.name, func(t *testing.T) {
+
+			// os.Setenv("token_symmetric_key", util.RandomString(32))
+
 			server := newTestServer(t, nil)
 
 			authPath := "/auth"
