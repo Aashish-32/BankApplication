@@ -20,6 +20,7 @@ func main() {
 	dbdriver := os.Getenv("dbdriver")
 	dbsource := os.Getenv("dbsource")
 	server_address := os.Getenv("server_address")
+	token_key := os.Getenv("token_symmetric_key")
 
 	DB, err := sql.Open(dbdriver, dbsource)
 	if err != nil {
@@ -27,7 +28,9 @@ func main() {
 
 	}
 	store := db.NewStore(DB)
-	var config util.Config
+	var config = util.Config{
+		TokenSymmetricKey: token_key,
+	}
 	server, err := api.NewServer(config, store)
 	if err != nil {
 		log.Fatalln(err)

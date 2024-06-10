@@ -2,7 +2,6 @@ package api
 
 import (
 	"fmt"
-	"os"
 
 	"github.com/Aashish-32/bank/token"
 	"github.com/Aashish-32/bank/util"
@@ -12,15 +11,15 @@ import (
 )
 
 type Server struct {
+	config     util.Config
 	store      *db.Store
 	router     *gin.Engine
 	tokenMaker token.Maker
 }
 
 func NewServer(config util.Config, store *db.Store) (*Server, error) {
-	token_key := os.Getenv("token_symmetric_key")
 
-	tokenMaker, err := token.NewPasetoMaker(token_key)
+	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %v", err)
 	}
@@ -28,6 +27,7 @@ func NewServer(config util.Config, store *db.Store) (*Server, error) {
 	server := &Server{
 		store:      store,
 		tokenMaker: tokenMaker,
+		config:     config,
 	}
 	server.setupRouter()
 
@@ -38,13 +38,17 @@ func NewServer(config util.Config, store *db.Store) (*Server, error) {
 func (server *Server) setupRouter() {
 	router := gin.Default()
 
-	router.POST("/accounts", server.createAccount)
-	router.GET("/accounts/:id", server.getAccount)
-	router.GET("/accounts", server.listAccounts)
-	router.POST("/transfers", server.createTransfer)
 	router.POST("/users", server.createUser)
-	router.GET("/users/:username", server.getUser)
 	router.POST("/users/login", server.login)
+
+	authRoutes := router.Group("/").Use(authMiddleware(server.tokenMaker))
+	authRoutes.POST("/accounts", server.createAccount)
+	authRoutes.GET("/accounts/:id", server.getAccount)
+	authRoutes.GET("/accounts", server.listAccounts)
+
+	router.POST("/transfers", server.createTransfer)
+
+	router.GET("/users/:username", server.getUser)
 
 	server.router = router
 
