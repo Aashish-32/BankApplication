@@ -8,6 +8,7 @@ import (
 	"time"
 
 	"github.com/Aashish-32/bank/token"
+	"github.com/Aashish-32/bank/util"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/require"
 )
@@ -46,14 +47,38 @@ func TestAuthMiddleware(t *testing.T) {
 		},
 
 		{
-			name: "UnsupportedAuthorized",
+			name: "UnsupportedAuthorization",
 			setupAuth: func(t *testing.T, req *http.Request, tokenmaker token.Maker) {
 
-				addAuthorization(t, req, tokenmaker, authorizationTypeBearer, "user", time.Minute)
+				addAuthorization(t, req, tokenmaker, util.RandomString(5), "user", time.Minute)
 			},
 
 			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
-				require.Equal(t, http.StatusOK, recorder.Code)
+				require.Equal(t, http.StatusUnauthorized, recorder.Code)
+			},
+		},
+
+		{
+			name: "InvalidAuthorizationFormat",
+			setupAuth: func(t *testing.T, req *http.Request, tokenmaker token.Maker) {
+
+				addAuthorization(t, req, tokenmaker, "", "user", time.Minute)
+			},
+
+			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusUnauthorized, recorder.Code)
+			},
+		},
+
+		{
+			name: "eXPIREDTOKEN",
+			setupAuth: func(t *testing.T, req *http.Request, tokenmaker token.Maker) {
+
+				addAuthorization(t, req, tokenmaker, authorizationTypeBearer, "user", -time.Minute)
+			},
+
+			checkResponse: func(t *testing.T, recorder *httptest.ResponseRecorder) {
+				require.Equal(t, http.StatusUnauthorized, recorder.Code)
 			},
 		},
 	}
