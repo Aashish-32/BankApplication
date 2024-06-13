@@ -12,12 +12,12 @@ import (
 
 type Server struct {
 	config     util.Config
-	store      db.Store
+	store      *db.Store
 	router     *gin.Engine
 	tokenMaker token.Maker
 }
 
-func NewServer(config util.Config, store db.Store) (*Server, error) {
+func NewServer(config util.Config, store *db.Store) (*Server, error) {
 	// token_key := os.Getenv("token_symmetric_key")
 
 	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
