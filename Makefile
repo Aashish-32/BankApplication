@@ -39,4 +39,5 @@ and:
 
 
 
-
+# to connect to a db:
+# \c mydatabase
