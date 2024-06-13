@@ -24,7 +24,7 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, err.Error())
 		return
 	}
-	fromAccount, valid := server.validAccount(ctx, req.FromAccountID, req.Currency, req.Amount)
+	fromAccount, valid := server.validAccount(ctx, req.FromAccountID, req.Currency)
 	if !valid {
 		return
 	}
@@ -43,7 +43,7 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 		return
 	}
 
-	_, valid = server.validAccount(ctx, req.ToAccountID, req.Currency, req.Amount)
+	_, valid = server.validAccount(ctx, req.ToAccountID, req.Currency)
 	if !valid {
 		return
 	}
@@ -63,7 +63,7 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 
 }
 
-func (server *Server) validAccount(ctx *gin.Context, accountID int64, currency string, amount int64) (db.Account, bool) {
+func (server *Server) validAccount(ctx *gin.Context, accountID int64, currency string) (db.Account, bool) {
 	acc, err := server.store.GetAccount(ctx, accountID)
 	if err == sql.ErrNoRows {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"Error": err.Error()})
