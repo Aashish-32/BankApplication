@@ -29,13 +29,17 @@ test:
 server:
 	go run main.go
 
+mock:
+	mockgen -package mockdb -destination db/mock/store.go github.com/Aashish-32/bank/db/sqlc Store
+	mockgen -package mockwk -destination worker/mock/distributor.go github.com/Aashish-32/bank/worker TaskDistributor
+
 acessPSQL:
 	docker exec -it mypostgres /bin/sh
 and:
 	psql -U root -d simplebank
 
 
-.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 sqlc server
+.PHONY: postgres createdb dropdb migrateup migrateup1 migratedown migratedown1 sqlc server mock
 
 
 
