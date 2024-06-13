@@ -2,7 +2,7 @@ POST http://localhost:8000/accounts
 content-type: application/json
 
 {
-    "owner": "adshybnub7",
+    "owner": "unique",
     "currency": "USD"
 }
 
@@ -44,7 +44,7 @@ POST http://localhost:8000/transfers
 content-type: application/json
 
 {
-    "from_account_id": 31,
+    "from_account_id": 102,
     "to_account_id": 45,
     "amount": 100,
     "currency": "EUR"

@@ -28,11 +28,18 @@ func (server *Server) createTransfer(ctx *gin.Context) {
 	if !valid {
 		return
 	}
+
 	authpayload := ctx.MustGet(authorizationPayloadKey).(*token.Payload)
 	if authpayload.Username != fromAccount.Owner {
 		err := fmt.Errorf("from account %v doesnot belong to the authenticated user", fromAccount.Owner)
 
 		ctx.JSON(http.StatusUnauthorized, gin.H{"errors": err.Error()})
+		return
+	}
+
+	if fromAccount.Balance < req.Amount {
+		err := fmt.Errorf("insufficient balance in account %v: %v < %v", fromAccount.ID, fromAccount.Balance, req.Amount)
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -72,11 +79,6 @@ func (server *Server) validAccount(ctx *gin.Context, accountID int64, currency s
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return acc, false
 
-	}
-	if acc.Balance < amount {
-		err := fmt.Errorf("insufficient balance in account %v: %v < %v", acc.ID, acc.Balance, amount)
-		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
-		return acc, false
 	}
 	return acc, true
 
