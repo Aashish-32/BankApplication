@@ -1,5 +1,5 @@
 postgres:
-	docker run --name mypostgres -e POSTGRES_PASSWORD=password -e POSTGRES_USER=root -p 5432:5432 -d postgres:16.0-alpine3.18
+	docker run --name mypostgres --network bank-network -e POSTGRES_PASSWORD=password -e POSTGRES_USER=root -p 5432:5432 -d postgres:16.0-alpine3.18
 
 createdb:
 	docker exec -it mypostgres createdb --username=root --owner=root simplebank
@@ -48,3 +48,6 @@ and:
 
 # to connect to a db:
 # \c mydatabase
+
+# make a file executable:
+# icacls wait-for-it.sh /grant Users:RX
