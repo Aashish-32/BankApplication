@@ -17,5 +17,5 @@ COPY start.sh .
 COPY wait-for-it.sh .
 RUN apk add --no-cache bash
 EXPOSE 8080
-CMD [ "/app/main" ]
+CMD [ "main" ]
 ENTRYPOINT [ "./start.sh" ]
