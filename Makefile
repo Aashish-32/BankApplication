@@ -29,6 +29,9 @@ test:
 server:
 	go run main.go
 
+bankContainer:
+	docker run --name bank --network bank-network -p 8000:8000 -e dbsource=postgresql://root:password@mypostgres:5432/simplebank?sslmode=disable -e GIN_MODE=release simplebank
+
 mock:
 	mockgen -package mockdb -destination db/mock/store.go github.com/Aashish-32/bank/db/sqlc Store
 	mockgen -package mockwk -destination worker/mock/distributor.go github.com/Aashish-32/bank/worker TaskDistributor
