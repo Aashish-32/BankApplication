@@ -51,3 +51,6 @@ and:
 
 # make a file executable:
 # icacls wait-for-it.sh /grant Users:RX
+
+- Create a new migration:
+	migrate create -ext sql -dir db/miration -seq <migrationname>
