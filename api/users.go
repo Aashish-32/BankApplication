@@ -12,6 +12,7 @@ import (
 	db "github.com/Aashish-32/bank/db/sqlc"
 	"github.com/Aashish-32/bank/util"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/lib/pq"
 )
 
@@ -107,8 +108,13 @@ type loginUserRequest struct {
 }
 
 type loginUserResponse struct {
-	AccessToken string       `json:"access_token"`
-	User        UserResponse `json:"user_response"`
+	Sessionid            uuid.UUID `json:"session_id"`
+	AccessToken          string    `json:"access_token"`
+	AccesstokenexpiresAt time.Time `json:"access_token_expires_at"`
+
+	RefreshtokenexpiresAt time.Time    `json:"refresh=_token_expires_at"`
+	RefreshToken          string       `json:"refresh_token"`
+	User                  UserResponse `json:"user_response"`
 }
 
 func (server *Server) login(ctx *gin.Context) {
@@ -142,14 +148,43 @@ func (server *Server) login(ctx *gin.Context) {
 		log.Println("unable parse duration: %w", err)
 	}
 
-	accessToken, err := server.tokenMaker.CreateToken(req.Username, new_token_duration)
+	accessToken, access_payload, err := server.tokenMaker.CreateToken(user.Username, new_token_duration)
 	if err != nil {
 		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
+
+	refreshToken, refreshPlayload, err := server.tokenMaker.CreateToken(
+		req.Username,
+		server.config.RefreshTokenDuration)
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	session, err := server.store.CreateSession(ctx, db.CreateSessionParams{
+		ID:           refreshPlayload.ID,
+		Username:     user.Username,
+		RefreshToken: refreshToken,
+		UserAgent:    "",
+		ClientIp:     "",
+		IsBlocked:    false,
+		ExpiresAt:    refreshPlayload.Expiry,
+	})
+
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
 	response := loginUserResponse{
-		AccessToken: accessToken,
-		User:        Newuserresponse(user),
+		Sessionid:             session.ID,
+		AccessToken:           accessToken,
+		AccesstokenexpiresAt:  access_payload.Expiry,
+		RefreshToken:          refreshToken,
+		RefreshtokenexpiresAt: refreshPlayload.Expiry,
+		User:                  Newuserresponse(user),
 	}
 
 	ctx.JSON(http.StatusAccepted, response)

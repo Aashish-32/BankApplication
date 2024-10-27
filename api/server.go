@@ -20,14 +20,14 @@ type Server struct {
 func NewServer(config util.Config, store *db.Store) (*Server, error) {
 	// token_key := os.Getenv("token_symmetric_key")
 
-	tokenMaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
+	tokenmaker, err := token.NewPasetoMaker(config.TokenSymmetricKey)
 	if err != nil {
 		return nil, fmt.Errorf("cannot create token maker: %v", err)
 	}
 
 	server := &Server{
 		store:      store,
-		tokenMaker: tokenMaker,
+		tokenMaker: tokenmaker,
 		config:     config,
 	}
 	server.setupRouter()
